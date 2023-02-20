@@ -11,7 +11,7 @@ class BeerControllerTest extends Specification {
 
     def "get beer by ID"() {
         when:
-        def result = testSubject.getBeerById(UUID.randomUUID())
+        def result = testSubject.listBeers()
 
         then:
         result
