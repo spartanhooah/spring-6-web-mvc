@@ -4,11 +4,13 @@ import net.frey.spring6webmvc.model.Customer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Map.of;
 import static java.util.UUID.randomUUID;
 
 @Service
@@ -32,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
             .lastModified(now())
             .build();
 
-        customerMap = Map.of(customer1.getId(), customer1, customer2.getId(), customer2);
+        customerMap = new HashMap<>(of(customer1.getId(), customer1, customer2.getId(), customer2));
     }
 
 
@@ -44,5 +46,20 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getCustomerById(UUID id) {
         return customerMap.get(id);
+    }
+
+    @Override
+    public Customer addCustomer(Customer customer) {
+        Customer savedCustomer = Customer.builder()
+            .id(randomUUID())
+            .created(now())
+            .lastModified(now())
+            .name(customer.getName())
+            .version(customer.getVersion() == 0 ? 1 : customer.getVersion())
+            .build();
+
+        customerMap.put(savedCustomer.getId(), savedCustomer);
+
+        return savedCustomer;
     }
 }

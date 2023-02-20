@@ -77,6 +77,7 @@ public class BeerServiceImpl implements BeerService {
             .id(randomUUID())
             .createdDate(now())
             .updatedDate(now())
+            .version(beer.getVersion() == 0 ? 1 : beer.getVersion())
             .beerName(beer.getBeerName())
             .beerStyle(beer.getBeerStyle())
             .quantityOnHand(beer.getQuantityOnHand())
