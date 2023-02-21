@@ -15,6 +15,7 @@ import java.util.UUID;
 import static java.time.LocalDateTime.now;
 import static java.util.Map.of;
 import static java.util.UUID.randomUUID;
+import static org.springframework.util.StringUtils.hasText;
 
 @Slf4j
 @Service
@@ -88,5 +89,48 @@ public class BeerServiceImpl implements BeerService {
         beerMap.put(savedBeer.getId(), savedBeer);
 
         return savedBeer;
+    }
+
+    @Override
+    public void updateBeerById(UUID beerId, Beer beer) {
+        Beer existingBeer = beerMap.get(beerId);
+
+        existingBeer.setBeerName(beer.getBeerName());
+        existingBeer.setPrice(beer.getPrice());
+        existingBeer.setUpc(beer.getUpc());
+        existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
+        existingBeer.setUpdatedDate(now());
+    }
+
+    @Override
+    public void delete(UUID beerId) {
+        beerMap.remove(beerId);
+    }
+
+    @Override
+    public void patchBeer(UUID beerId, Beer beer) {
+        Beer existing = beerMap.get(beerId);
+
+        if (hasText(beer.getBeerName())) {
+            existing.setBeerName(beer.getBeerName());
+        }
+
+        if (beer.getBeerStyle() != null) {
+            existing.setBeerStyle(beer.getBeerStyle());
+        }
+
+        if (beer.getPrice() != null) {
+            existing.setPrice(beer.getPrice());
+        }
+
+        if (beer.getQuantityOnHand() != null) {
+            existing.setQuantityOnHand(beer.getQuantityOnHand());
+        }
+
+        if (hasText(beer.getUpc())) {
+            existing.setUpc(beer.getUpc());
+        }
+
+        existing.setUpdatedDate(now());
     }
 }
