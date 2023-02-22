@@ -52,7 +52,7 @@ public class CustomerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/[customerId}")
+    @DeleteMapping("/{customerId}")
     public ResponseEntity<Customer> deleteCustomer(@PathVariable UUID customerId) {
         customerService.delete(customerId);
 

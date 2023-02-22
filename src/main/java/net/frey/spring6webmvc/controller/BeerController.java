@@ -65,7 +65,7 @@ public class BeerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/{beerId")
+    @PatchMapping("/{beerId}")
     public ResponseEntity<Beer> patchBeer(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
         beerService.patchBeer(beerId, beer);
 
