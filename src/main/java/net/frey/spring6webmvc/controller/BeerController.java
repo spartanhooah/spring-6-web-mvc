@@ -22,9 +22,10 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/beer")
+@RequestMapping(BeerController.PATH)
 @RequiredArgsConstructor
 public class BeerController {
+    public static final String PATH = "/api/v1/beer";
     private final BeerService beerService;
 
     // @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
@@ -45,7 +46,7 @@ public class BeerController {
         Beer savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("location", "/api/v1/beer/" + savedBeer.getId()
+        headers.add("location", PATH + savedBeer.getId()
             .toString());
 
         return new ResponseEntity<>(headers, HttpStatus.CREATED);

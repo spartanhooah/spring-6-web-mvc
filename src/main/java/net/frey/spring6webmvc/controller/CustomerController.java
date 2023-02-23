@@ -19,9 +19,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/customer")
+@RequestMapping(CustomerController.PATH)
 @RequiredArgsConstructor
 public class CustomerController {
+    public static final String PATH = "/api/v1/customer";
     private final CustomerService customerService;
 
     @GetMapping
@@ -39,7 +40,7 @@ public class CustomerController {
         Customer savedCustomer = customerService.addCustomer(customer);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("location", "/api/v1/customer/" + savedCustomer.getId()
+        headers.add("location", PATH + savedCustomer.getId()
             .toString());
 
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
