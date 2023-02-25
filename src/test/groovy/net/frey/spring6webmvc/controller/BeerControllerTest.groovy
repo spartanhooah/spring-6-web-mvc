@@ -1,6 +1,7 @@
 package net.frey.spring6webmvc.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import net.frey.spring6webmvc.exception.NotFoundException
 import net.frey.spring6webmvc.model.Beer
 import net.frey.spring6webmvc.service.BeerService
 import net.frey.spring6webmvc.service.BeerServiceImpl
@@ -11,13 +12,14 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
+import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.BeerController.PATH
 import static org.hamcrest.core.Is.is
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -43,7 +45,7 @@ class BeerControllerTest extends Specification {
     def "get beer by ID"() {
         given:
         def testBeer = impl.listBeers()[0]
-        beerService.getBeerById(testBeer.id) >> testBeer
+        beerService.getBeerById(testBeer.id) >> Optional.of(testBeer)
 
         expect:
         mockMvc.perform(get("$PATH/$testBeer.id")
@@ -112,7 +114,7 @@ class BeerControllerTest extends Specification {
         def beer = impl.listBeers()[0]
         def beerMap = ["beerName": "new name"]
 
-        1 * beerService.patchBeer({ it == beer.id }, { it.beerName == "new name"} )
+        1 * beerService.patchBeer({ it == beer.id }, { it.beerName == "new name" })
 
         expect:
         mockMvc.perform(patch("$PATH/$beer.id")
@@ -120,5 +122,14 @@ class BeerControllerTest extends Specification {
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(beerMap)))
             .andExpect(status().isNoContent())
+    }
+
+    def "get beer by ID throws not found"() {
+        given:
+        beerService.getBeerById(_ as UUID) >> Optional.empty()
+
+        expect:
+        mockMvc.perform(get("$PATH/${randomUUID()}"))
+            .andExpect(status().isNotFound())
     }
 }

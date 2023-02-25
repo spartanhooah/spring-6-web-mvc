@@ -2,6 +2,7 @@ package net.frey.spring6webmvc.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.frey.spring6webmvc.exception.NotFoundException;
 import net.frey.spring6webmvc.model.Beer;
 import net.frey.spring6webmvc.service.BeerService;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +38,7 @@ public class BeerController {
     @GetMapping("/{beerId}")
     public Beer getBeerById(@PathVariable UUID beerId) {
         log.info("Getting a beer with id " + beerId);
-        return beerService.getBeerById(beerId);
+        return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 
     // @RequestMapping(method = RequestMethod.POST)

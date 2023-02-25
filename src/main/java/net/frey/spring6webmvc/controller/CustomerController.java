@@ -1,6 +1,7 @@
 package net.frey.spring6webmvc.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.frey.spring6webmvc.exception.NotFoundException;
 import net.frey.spring6webmvc.model.Customer;
 import net.frey.spring6webmvc.service.CustomerService;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +33,7 @@ public class CustomerController {
 
     @GetMapping("/{customerId}")
     public Customer getCustomerById(@PathVariable UUID customerId) {
-        return customerService.getCustomerById(customerId);
+        return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
     }
 
     @PostMapping

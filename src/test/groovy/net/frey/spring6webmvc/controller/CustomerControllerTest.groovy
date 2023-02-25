@@ -1,17 +1,18 @@
 package net.frey.spring6webmvc.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import net.frey.spring6webmvc.exception.NotFoundException
 import net.frey.spring6webmvc.model.Customer
 import net.frey.spring6webmvc.service.CustomerService
 import net.frey.spring6webmvc.service.CustomerServiceImpl
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.propertyeditors.CustomCollectionEditor
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
+import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.CustomerController.PATH
 import static org.hamcrest.core.Is.is
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
@@ -43,7 +44,7 @@ class CustomerControllerTest extends Specification {
     def "get customer by ID"() {
         given:
         def testCustomer = impl.listCustomers()[0]
-        customerService.getCustomerById(testCustomer.id) >> testCustomer
+        customerService.getCustomerById(testCustomer.id) >> Optional.of(testCustomer)
 
         expect:
         mockMvc.perform(get("$PATH/$testCustomer.id")
@@ -105,5 +106,14 @@ class CustomerControllerTest extends Specification {
         expect:
         mockMvc.perform(delete("$PATH/$customer.id"))
             .andExpect(status().isNoContent())
+    }
+
+    def "get customer by ID throws not found"() {
+        given:
+        customerService.getCustomerById(_ as UUID) >> Optional.empty()
+
+        expect:
+        mockMvc.perform(get("$PATH/${randomUUID()}"))
+            .andExpect(status().isNotFound())
     }
 }
