@@ -3,7 +3,7 @@ package net.frey.spring6webmvc.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.frey.spring6webmvc.exception.NotFoundException;
-import net.frey.spring6webmvc.model.Beer;
+import net.frey.spring6webmvc.model.dto.BeerDTO;
 import net.frey.spring6webmvc.service.BeerService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,20 +31,20 @@ public class BeerController {
 
     // @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
     @GetMapping
-    public List<Beer> listBeers() {
+    public List<BeerDTO> listBeers() {
         return beerService.listBeers();
     }
 
     @GetMapping("/{beerId}")
-    public Beer getBeerById(@PathVariable UUID beerId) {
+    public BeerDTO getBeerById(@PathVariable UUID beerId) {
         log.info("Getting a beer with id " + beerId);
         return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 
     // @RequestMapping(method = RequestMethod.POST)
     @PostMapping
-    public ResponseEntity<Beer> addBeer(@RequestBody Beer beer) {
-        Beer savedBeer = beerService.saveNewBeer(beer);
+    public ResponseEntity<BeerDTO> addBeer(@RequestBody BeerDTO beer) {
+        BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("location", PATH + savedBeer.getId()
@@ -54,21 +54,21 @@ public class BeerController {
     }
 
     @PutMapping("/{beerId}")
-    public ResponseEntity<Beer> updateById(@PathVariable UUID beerId, @RequestBody Beer beer) {
+    public ResponseEntity<BeerDTO> updateById(@PathVariable UUID beerId, @RequestBody BeerDTO beer) {
         beerService.updateBeerById(beerId, beer);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{beerId}")
-    public ResponseEntity<Beer> deleteById(@PathVariable UUID beerId) {
+    public ResponseEntity<BeerDTO> deleteById(@PathVariable UUID beerId) {
         beerService.delete(beerId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/{beerId}")
-    public ResponseEntity<Beer> patchBeer(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+    public ResponseEntity<BeerDTO> patchBeer(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         beerService.patchBeer(beerId, beer);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

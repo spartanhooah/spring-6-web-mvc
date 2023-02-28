@@ -1,8 +1,7 @@
 package net.frey.spring6webmvc.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import net.frey.spring6webmvc.exception.NotFoundException
-import net.frey.spring6webmvc.model.Customer
+import net.frey.spring6webmvc.model.dto.CustomerDTO
 import net.frey.spring6webmvc.service.CustomerService
 import net.frey.spring6webmvc.service.CustomerServiceImpl
 import org.spockframework.spring.SpringBean
@@ -72,7 +71,7 @@ class CustomerControllerTest extends Specification {
         def customer = impl.listCustomers()[0]
         customer.id = null
         customer.version = 0
-        customerService.addCustomer(_ as Customer) >> impl.listCustomers()[1]
+        customerService.addCustomer(_ as CustomerDTO) >> impl.listCustomers()[1]
 
         expect:
         mockMvc.perform(post(PATH)
@@ -87,7 +86,7 @@ class CustomerControllerTest extends Specification {
         given:
         def customer = impl.listCustomers()[0]
 
-        1 * customerService.updateCustomer(_ as UUID, _ as Customer)
+        1 * customerService.updateCustomer(_ as UUID, _ as CustomerDTO)
 
         expect:
         mockMvc.perform(put("$PATH/$customer.id")

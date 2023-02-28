@@ -2,7 +2,7 @@ package net.frey.spring6webmvc.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.frey.spring6webmvc.exception.NotFoundException;
-import net.frey.spring6webmvc.model.Customer;
+import net.frey.spring6webmvc.model.dto.CustomerDTO;
 import net.frey.spring6webmvc.service.CustomerService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,18 +27,18 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    public List<Customer> listCustomers() {
+    public List<CustomerDTO> listCustomers() {
         return customerService.listCustomers();
     }
 
     @GetMapping("/{customerId}")
-    public Customer getCustomerById(@PathVariable UUID customerId) {
+    public CustomerDTO getCustomerById(@PathVariable UUID customerId) {
         return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
     }
 
     @PostMapping
-    public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
-        Customer savedCustomer = customerService.addCustomer(customer);
+    public ResponseEntity<CustomerDTO> addCustomer(@RequestBody CustomerDTO customer) {
+        CustomerDTO savedCustomer = customerService.addCustomer(customer);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("location", PATH + savedCustomer.getId()
@@ -48,14 +48,14 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID customerId, @RequestBody Customer customer) {
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable UUID customerId, @RequestBody CustomerDTO customer) {
         customerService.updateCustomer(customerId, customer);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{customerId}")
-    public ResponseEntity<Customer> deleteCustomer(@PathVariable UUID customerId) {
+    public ResponseEntity<CustomerDTO> deleteCustomer(@PathVariable UUID customerId) {
         customerService.delete(customerId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

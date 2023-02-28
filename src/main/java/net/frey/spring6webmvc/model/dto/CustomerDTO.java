@@ -1,4 +1,4 @@
-package net.frey.spring6webmvc.model;
+package net.frey.spring6webmvc.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class Customer {
+public class CustomerDTO {
     private UUID id;
     private String name;
     private int version;

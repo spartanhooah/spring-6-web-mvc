@@ -1,8 +1,7 @@
 package net.frey.spring6webmvc.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import net.frey.spring6webmvc.exception.NotFoundException
-import net.frey.spring6webmvc.model.Beer
+import net.frey.spring6webmvc.model.dto.BeerDTO
 import net.frey.spring6webmvc.service.BeerService
 import net.frey.spring6webmvc.service.BeerServiceImpl
 import org.spockframework.spring.SpringBean
@@ -73,7 +72,7 @@ class BeerControllerTest extends Specification {
         def beer = impl.listBeers()[0]
         beer.version = 0
         beer.id = null
-        beerService.saveNewBeer(_ as Beer) >> impl.listBeers()[1]
+        beerService.saveNewBeer(_ as BeerDTO) >> impl.listBeers()[1]
 
         expect:
         mockMvc.perform(post(PATH)
@@ -88,7 +87,7 @@ class BeerControllerTest extends Specification {
         given:
         def beer = impl.listBeers()[0]
 
-        1 * beerService.updateBeerById(_ as UUID, _ as Beer)
+        1 * beerService.updateBeerById(_ as UUID, _ as BeerDTO)
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")

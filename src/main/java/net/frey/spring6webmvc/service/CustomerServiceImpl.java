@@ -1,6 +1,6 @@
 package net.frey.spring6webmvc.service;
 
-import net.frey.spring6webmvc.model.Customer;
+import net.frey.spring6webmvc.model.dto.CustomerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,10 +16,10 @@ import static java.util.UUID.randomUUID;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
-    private final Map<UUID, Customer> customerMap;
+    private final Map<UUID, CustomerDTO> customerMap;
 
     public CustomerServiceImpl() {
-        Customer customer1 = Customer.builder()
+        CustomerDTO customer1 = CustomerDTO.builder()
             .id(randomUUID())
             .name("Billie Jean")
             .version(1)
@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
             .lastModified(now())
             .build();
 
-        Customer customer2 = Customer.builder()
+        CustomerDTO customer2 = CustomerDTO.builder()
             .id(randomUUID())
             .name("Jim Bob")
             .version(1)
@@ -40,18 +40,18 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public List<Customer> listCustomers() {
+    public List<CustomerDTO> listCustomers() {
         return new ArrayList<>(customerMap.values());
     }
 
     @Override
-    public Optional<Customer> getCustomerById(UUID id) {
+    public Optional<CustomerDTO> getCustomerById(UUID id) {
         return Optional.of(customerMap.get(id));
     }
 
     @Override
-    public Customer addCustomer(Customer customer) {
-        Customer savedCustomer = Customer.builder()
+    public CustomerDTO addCustomer(CustomerDTO customer) {
+        CustomerDTO savedCustomer = CustomerDTO.builder()
             .id(randomUUID())
             .created(now())
             .lastModified(now())
@@ -65,8 +65,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void updateCustomer(UUID customerId, Customer customer) {
-        Customer existing = customerMap.get(customerId);
+    public void updateCustomer(UUID customerId, CustomerDTO customer) {
+        CustomerDTO existing = customerMap.get(customerId);
 
         existing.setName(customer.getName());
         existing.setLastModified(now());
