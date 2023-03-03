@@ -1,12 +1,11 @@
 package net.frey.spring6webmvc.model.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import net.frey.spring6webmvc.model.BeerStyle;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.Builder;
+import lombok.Data;
+import net.frey.spring6webmvc.model.BeerStyle;
 
 @Data
 @Builder

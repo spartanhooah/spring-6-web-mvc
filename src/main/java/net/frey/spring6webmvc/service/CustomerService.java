@@ -1,10 +1,9 @@
 package net.frey.spring6webmvc.service;
 
-import net.frey.spring6webmvc.model.dto.CustomerDTO;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import net.frey.spring6webmvc.model.dto.CustomerDTO;
 
 public interface CustomerService {
     List<CustomerDTO> listCustomers();
@@ -13,7 +12,9 @@ public interface CustomerService {
 
     CustomerDTO addCustomer(CustomerDTO customer);
 
-    void updateCustomer(UUID customerId, CustomerDTO customer);
+    Optional<CustomerDTO> updateCustomer(UUID customerId, CustomerDTO customer);
 
-    void delete(UUID customerId);
+    boolean delete(UUID customerId);
+
+    void patchCustomer(UUID customerId, CustomerDTO customer);
 }

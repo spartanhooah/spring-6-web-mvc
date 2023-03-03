@@ -87,7 +87,7 @@ class BeerControllerTest extends Specification {
         given:
         def beer = impl.listBeers()[0]
 
-        1 * beerService.updateBeerById(_ as UUID, _ as BeerDTO)
+        1 * beerService.updateBeerById(_ as UUID, _ as BeerDTO) >> Optional.of(beer)
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
@@ -101,7 +101,7 @@ class BeerControllerTest extends Specification {
         given:
         def beer = impl.listBeers()[0]
 
-        1 * beerService.delete({ it == beer.id })
+        1 * beerService.delete({ it == beer.id }) >> true
 
         expect:
         mockMvc.perform(delete("$PATH/$beer.id"))

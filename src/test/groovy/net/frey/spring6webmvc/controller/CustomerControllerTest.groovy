@@ -86,7 +86,7 @@ class CustomerControllerTest extends Specification {
         given:
         def customer = impl.listCustomers()[0]
 
-        1 * customerService.updateCustomer(_ as UUID, _ as CustomerDTO)
+        1 * customerService.updateCustomer(_ as UUID, _ as CustomerDTO) >> Optional.of(customer)
 
         expect:
         mockMvc.perform(put("$PATH/$customer.id")
@@ -100,7 +100,7 @@ class CustomerControllerTest extends Specification {
         given:
         def customer = impl.listCustomers()[0]
 
-        1 * customerService.delete({ it == customer.id })
+        1 * customerService.delete({ it == customer.id }) >> true
 
         expect:
         mockMvc.perform(delete("$PATH/$customer.id"))

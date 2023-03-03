@@ -1,10 +1,9 @@
 package net.frey.spring6webmvc.service;
 
-import net.frey.spring6webmvc.model.dto.BeerDTO;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import net.frey.spring6webmvc.model.dto.BeerDTO;
 
 public interface BeerService {
     List<BeerDTO> listBeers();
@@ -13,9 +12,9 @@ public interface BeerService {
 
     BeerDTO saveNewBeer(BeerDTO beer);
 
-    void updateBeerById(UUID beerId, BeerDTO beer);
+    Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beer);
 
-    void delete(UUID beerId);
+    boolean delete(UUID beerId);
 
     void patchBeer(UUID beerId, BeerDTO beer);
 }

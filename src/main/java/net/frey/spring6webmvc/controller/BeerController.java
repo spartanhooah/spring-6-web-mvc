@@ -1,5 +1,7 @@
 package net.frey.spring6webmvc.controller;
 
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.frey.spring6webmvc.exception.NotFoundException;
@@ -17,9 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -47,28 +46,33 @@ public class BeerController {
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("location", PATH + savedBeer.getId()
-            .toString());
+        headers.add("location", PATH + "/" + savedBeer.getId().toString());
 
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PutMapping("/{beerId}")
-    public ResponseEntity<BeerDTO> updateById(@PathVariable UUID beerId, @RequestBody BeerDTO beer) {
-        beerService.updateBeerById(beerId, beer);
+    public ResponseEntity<BeerDTO> updateById(
+            @PathVariable UUID beerId, @RequestBody BeerDTO beer) {
+        if (beerService.updateBeerById(beerId, beer).isEmpty()) {
+            throw new NotFoundException();
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{beerId}")
     public ResponseEntity<BeerDTO> deleteById(@PathVariable UUID beerId) {
-        beerService.delete(beerId);
+        if (beerService.delete(beerId)) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        throw new NotFoundException();
     }
 
     @PatchMapping("/{beerId}")
-    public ResponseEntity<BeerDTO> patchBeer(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity<BeerDTO> patchBeer(
+            @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         beerService.patchBeer(beerId, beer);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
