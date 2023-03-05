@@ -40,7 +40,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-//		exclude group: 'org.junit.jupiter'
+		exclude group: 'org.junit.jupiter'
 		exclude group: 'org.mockito'
 	}
 

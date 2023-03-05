@@ -1,5 +1,6 @@
 package net.frey.spring6webmvc.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.transaction.Transactional
 import net.frey.spring6webmvc.exception.NotFoundException
 import net.frey.spring6webmvc.mapper.BeerMapper
@@ -9,10 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.test.annotation.Rollback
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
 import static java.util.UUID.randomUUID
-import static java.util.UUID.randomUUID
+import static net.frey.spring6webmvc.controller.BeerController.PATH
+import static org.hamcrest.core.Is.is
+import static org.springframework.http.MediaType.APPLICATION_JSON
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
 class BeerControllerIntegrationTest extends Specification {
@@ -23,7 +31,19 @@ class BeerControllerIntegrationTest extends Specification {
     BeerRepository repository
 
     @Autowired
-    BeerMapper mapper
+    BeerMapper beerMapper
+
+    @Autowired
+    ObjectMapper objectMapper
+
+    @Autowired
+    WebApplicationContext wac
+
+    def mockMvc
+
+    void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
+    }
 
     def "list all beers"() {
         expect:
@@ -85,7 +105,7 @@ class BeerControllerIntegrationTest extends Specification {
     def "update an existing beer"() {
         given:
         def beer = repository.findAll()[0]
-        def beerDto = mapper.entityToDto(beer)
+        def beerDto = beerMapper.entityToDto(beer)
         beerDto.id = null
         beerDto.version = 0
         def beerName = "UPDATED"
@@ -155,5 +175,18 @@ class BeerControllerIntegrationTest extends Specification {
 
         then:
         thrown(NotFoundException)
+    }
+
+    def "update a beer via PATCH with bad name"() {
+        given:
+        def beer = repository.findAll()[0]
+        def beerMap = ["beerName": "new name 12345654321234566543212345654321234561234565432"]
+
+        expect:
+        mockMvc.perform(patch("$PATH/$beer.id")
+            .contentType(APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(beerMap)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath('$.length()', is(1)))
     }
 }

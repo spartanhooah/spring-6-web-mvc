@@ -1,5 +1,7 @@
 package net.frey.spring6webmvc.repository
 
+import jakarta.validation.ConstraintViolationException
+import net.frey.spring6webmvc.model.BeerStyle
 import net.frey.spring6webmvc.model.entity.BeerEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
@@ -22,9 +24,29 @@ class BeerRepositoryTest extends Specification {
         when:
         def savedBeer = beerRepository.save(BeerEntity.builder()
             .beerName("My Beer")
+            .beerStyle(BeerStyle.ALE)
+            .upc("123456")
+            .price(10.99)
             .build())
+
+        beerRepository.flush()
 
         then:
         savedBeer.beerName == "My Beer"
+    }
+
+    def "save a beer with a long name"() {
+        when:
+        def savedBeer = beerRepository.save(BeerEntity.builder()
+            .beerName("My Beer 123456543212345654321234565432112345654323456543")
+            .beerStyle(BeerStyle.ALE)
+            .upc("123456")
+            .price(10.99)
+            .build())
+
+        beerRepository.flush()
+
+        then:
+        thrown(ConstraintViolationException)
     }
 }
