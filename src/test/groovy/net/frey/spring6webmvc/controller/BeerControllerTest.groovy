@@ -7,13 +7,13 @@ import net.frey.spring6webmvc.service.BeerServiceImpl
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
 import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.BeerController.PATH
 import static org.hamcrest.core.Is.is
+import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
@@ -47,10 +47,9 @@ class BeerControllerTest extends Specification {
         beerService.getBeerById(testBeer.id) >> Optional.of(testBeer)
 
         expect:
-        mockMvc.perform(get("$PATH/$testBeer.id")
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("$PATH/$testBeer.id"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.id', is(testBeer.id.toString())))
             .andExpect(jsonPath('$.beerName', is(testBeer.beerName)))
     }
@@ -60,10 +59,9 @@ class BeerControllerTest extends Specification {
         beerService.listBeers() >> impl.listBeers()
 
         expect:
-        mockMvc.perform(get(PATH)
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(PATH))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.length()', is(3)))
     }
 
@@ -76,8 +74,7 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(post(PATH)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isCreated())
             .andExpect(header().exists("location"))
@@ -91,8 +88,7 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isNoContent())
     }
@@ -117,8 +113,7 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(patch("$PATH/$beer.id")
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beerMap)))
             .andExpect(status().isNoContent())
     }
@@ -130,5 +125,29 @@ class BeerControllerTest extends Specification {
         expect:
         mockMvc.perform(get("$PATH/${randomUUID()}"))
             .andExpect(status().isNotFound())
+    }
+
+    def "return a 400 for adding a beer with no name"() {
+        expect:
+        mockMvc.perform(post(PATH)
+            .contentType(APPLICATION_JSON)
+            .content(mapper.writeValueAsString(BeerDTO.builder().build())))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath('$.length()', is(4)))
+            .andReturn()
+    }
+
+    def "return a 400 for trying to update a beer by sending a blank name"() {
+        given:
+        def beer = impl.listBeers()[0]
+        beer.beerName = ""
+
+        expect:
+        mockMvc.perform(put("$PATH/$beer.id")
+            .contentType(APPLICATION_JSON)
+            .content(mapper.writeValueAsString(beer)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath('$.length()', is(1)))
+            .andReturn()
     }
 }

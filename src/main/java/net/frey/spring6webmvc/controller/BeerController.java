@@ -1,5 +1,6 @@
 package net.frey.spring6webmvc.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class BeerController {
 
     // @RequestMapping(method = RequestMethod.POST)
     @PostMapping
-    public ResponseEntity<BeerDTO> addBeer(@RequestBody BeerDTO beer) {
+    public ResponseEntity<BeerDTO> addBeer(@Valid @RequestBody BeerDTO beer) {
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
@@ -53,7 +54,7 @@ public class BeerController {
 
     @PutMapping("/{beerId}")
     public ResponseEntity<BeerDTO> updateById(
-            @PathVariable UUID beerId, @RequestBody BeerDTO beer) {
+            @PathVariable UUID beerId, @Valid @RequestBody BeerDTO beer) {
         if (beerService.updateBeerById(beerId, beer).isEmpty()) {
             throw new NotFoundException();
         }
