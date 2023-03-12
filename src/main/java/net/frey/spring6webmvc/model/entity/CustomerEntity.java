@@ -16,6 +16,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -26,6 +28,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class CustomerEntity {
     @Id
+    @JdbcTypeCode(SqlTypes.CHAR)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)

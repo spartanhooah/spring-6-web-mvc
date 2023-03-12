@@ -5,11 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,6 +17,13 @@ import lombok.ToString;
 import net.frey.spring6webmvc.model.BeerStyle;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -32,6 +34,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class BeerEntity {
     @Id
+    @JdbcTypeCode(SqlTypes.CHAR)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)

@@ -2,18 +2,15 @@ spring:
   datasource:
     username: restadmin
     password: password
-    url: jdbc:mysql://127.0.0.1:3306/restdb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/restdb?useUnicode=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: RestDB-Pool
+      maximum-pool-size: 5
+
   jpa:
     hibernate:
       ddl-auto: update
     database: mysql
     properties:
-      # IntelliJ doesn't know about this but it works
-#      hibernate.format_sql: true
-      hibernate-show-sql: true
       hibernate-dialect: org.hibernate.dialect.MySQLDialect
-
-logging:
-  level:
-    org.hibernate.orm.jdbc.bind: trace
