@@ -11,6 +11,8 @@ public class CustomerDTO {
     private UUID id;
     private String name;
     private int version;
+
+    private String email;
     private LocalDateTime createdDate;
     private LocalDateTime lastModified;
 }

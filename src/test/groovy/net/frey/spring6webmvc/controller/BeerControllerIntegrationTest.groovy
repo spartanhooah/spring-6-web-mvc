@@ -47,7 +47,7 @@ class BeerControllerIntegrationTest extends Specification {
 
     def "list all beers"() {
         expect:
-        controller.listBeers().size() == 3
+        controller.listBeers().size() == 2410
     }
 
     @Rollback

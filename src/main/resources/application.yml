@@ -3,3 +3,8 @@ spring:
     default: localmysql
   flyway:
     enabled: false
+
+logging:
+  level:
+    org.apache.commons.beanutils.ConvertUtils: "info"
+    org.hibernate.orm.deprecation: "error"

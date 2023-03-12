@@ -1,23 +1,31 @@
 package net.frey.spring6webmvc.repository
 
 import jakarta.validation.ConstraintViolationException
+import net.frey.spring6webmvc.bootstrap.BootstrapData
 import net.frey.spring6webmvc.model.BeerStyle
 import net.frey.spring6webmvc.model.entity.BeerEntity
+import net.frey.spring6webmvc.service.BeerCsvServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.FilterType
+import org.springframework.context.annotation.Import
 import spock.lang.Specification
 
-@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = [CommandLineRunner]))
+@DataJpaTest
+@Import([BeerCsvServiceImpl, BootstrapData])
 class BeerRepositoryTest extends Specification {
     @Autowired
     BeerRepository beerRepository
 
+    @Autowired
+    BootstrapData bootstrapData
+
+    void setup() {
+        bootstrapData.run()
+    }
+
     def "check pre-populated data"() {
         expect:
-        beerRepository.count() == 3
+        beerRepository.count() == 2410
     }
 
     def "save a beer"() {
