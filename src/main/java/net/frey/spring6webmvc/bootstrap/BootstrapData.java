@@ -59,7 +59,7 @@ public class BootstrapData implements CommandLineRunner {
         CustomerEntity customer1 =
                 CustomerEntity.builder()
                         .name("Billie Jean")
-                        .created(now())
+                        .createdDate(now())
                         .lastModified(now())
                         .build();
 
@@ -67,7 +67,7 @@ public class BootstrapData implements CommandLineRunner {
                 CustomerEntity.builder()
                         .name("Jim Bob")
                         .version(1)
-                        .created(now())
+                        .createdDate(now())
                         .lastModified(now())
                         .build();
 

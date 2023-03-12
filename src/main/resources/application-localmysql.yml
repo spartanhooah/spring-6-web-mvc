@@ -7,10 +7,12 @@ spring:
     hikari:
       pool-name: RestDB-Pool
       maximum-pool-size: 5
+  flyway:
+    enabled: true
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     database: mysql
     properties:
       hibernate-dialect: org.hibernate.dialect.MySQLDialect

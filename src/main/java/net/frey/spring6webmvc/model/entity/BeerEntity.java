@@ -8,6 +8,9 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,15 +18,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import net.frey.spring6webmvc.model.BeerStyle;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -47,28 +44,43 @@ public class BeerEntity {
     @Size(max = 50)
     private String beerName;
 
-    @NotNull
-    private BeerStyle beerStyle;
+    @NotNull private BeerStyle beerStyle;
 
-    @NotBlank
-    private String upc;
+    @NotBlank private String upc;
     private Integer quantityOnHand;
 
-    @NotNull
-    private BigDecimal price;
+    @NotNull private BigDecimal price;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        BeerEntity that = (BeerEntity) o;
-        return id != null && Objects.equals(id, that.id);
+    public int hashCode() {
+        return getClass().hashCode();
     }
 
     @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BeerEntity that)) return false;
+
+        if (getVersion() != that.getVersion()) return false;
+        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+        if (getBeerName() != null
+                ? !getBeerName().equals(that.getBeerName())
+                : that.getBeerName() != null) return false;
+        if (getBeerStyle() != that.getBeerStyle()) return false;
+        if (getUpc() != null ? !getUpc().equals(that.getUpc()) : that.getUpc() != null)
+            return false;
+        if (getQuantityOnHand() != null
+                ? !getQuantityOnHand().equals(that.getQuantityOnHand())
+                : that.getQuantityOnHand() != null) return false;
+        if (getPrice() != null ? !getPrice().equals(that.getPrice()) : that.getPrice() != null)
+            return false;
+        if (getCreatedDate() != null
+                ? !getCreatedDate().equals(that.getCreatedDate())
+                : that.getCreatedDate() != null) return false;
+        return getUpdatedDate() != null
+                ? getUpdatedDate().equals(that.getUpdatedDate())
+                : that.getUpdatedDate() == null;
     }
 }

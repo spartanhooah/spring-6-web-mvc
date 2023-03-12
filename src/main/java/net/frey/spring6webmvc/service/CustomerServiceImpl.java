@@ -23,7 +23,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .id(randomUUID())
                         .name("Billie Jean")
                         .version(1)
-                        .created(now())
+                        .createdDate(now())
                         .lastModified(now())
                         .build();
 
@@ -32,7 +32,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .id(randomUUID())
                         .name("Jim Bob")
                         .version(1)
-                        .created(now())
+                        .createdDate(now())
                         .lastModified(now())
                         .build();
 
@@ -54,7 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerDTO savedCustomer =
                 CustomerDTO.builder()
                         .id(randomUUID())
-                        .created(now())
+                        .createdDate(now())
                         .lastModified(now())
                         .name(customer.getName())
                         .version(customer.getVersion() == 0 ? 1 : customer.getVersion())
@@ -71,13 +71,15 @@ public class CustomerServiceImpl implements CustomerService {
 
         existing.setName(customer.getName());
         existing.setLastModified(now());
-        return null;
+
+        return Optional.of(existing);
     }
 
     @Override
     public boolean delete(UUID customerId) {
         customerMap.remove(customerId);
-        return false;
+
+        return true;
     }
 
     @Override
