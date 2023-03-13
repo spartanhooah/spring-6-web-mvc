@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.transaction.Transactional
 import net.frey.spring6webmvc.exception.NotFoundException
 import net.frey.spring6webmvc.mapper.BeerMapper
+import net.frey.spring6webmvc.model.BeerStyle
 import net.frey.spring6webmvc.model.dto.BeerDTO
 import net.frey.spring6webmvc.repository.BeerRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +18,10 @@ import spock.lang.Specification
 import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.BeerController.PATH
 import static org.hamcrest.core.Is.is
+import static org.hamcrest.core.IsNull.notNullValue
+import static org.hamcrest.core.IsNull.nullValue
 import static org.springframework.http.MediaType.APPLICATION_JSON
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -47,7 +51,7 @@ class BeerControllerIntegrationTest extends Specification {
 
     def "list all beers"() {
         expect:
-        controller.listBeers().size() == 2410
+        controller.listBeers(null, null, false).size() == 2410
     }
 
     @Rollback
@@ -57,7 +61,7 @@ class BeerControllerIntegrationTest extends Specification {
         repository.deleteAll()
 
         expect:
-        controller.listBeers().size() == 0
+        controller.listBeers(null, null, false).size() == 0
     }
 
     def "get a beer by ID"() {
@@ -188,5 +192,52 @@ class BeerControllerIntegrationTest extends Specification {
             .content(objectMapper.writeValueAsString(beerMap)))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath('$.length()', is(1)))
+    }
+
+    def "list beers by name"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .queryParam("name", "IPA"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath('$.size()', is(336)))
+    }
+
+    def "list beers by style"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .queryParam("style", "IPA"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath('$.size()', is(547)))
+    }
+
+    def "list beers by style and name and show inventory"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .queryParam("name", "IPA")
+            .queryParam("style", BeerStyle.IPA.name())
+            .queryParam("showInventory", "TRUE"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath('$.size()', is(310)))
+            .andExpect(jsonPath('$.[0].quantityOnHand', is(notNullValue())))
+    }
+
+    def "list beers by style and name and don't show inventory"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .queryParam("name", "IPA")
+            .queryParam("style", BeerStyle.IPA.name())
+            .queryParam("showInventory", "FALSE"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath('$.size()', is(310)))
+            .andExpect(jsonPath('$.[0].quantityOnHand', is(nullValue())))
+    }
+
+    def "list beers by style and name"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .queryParam("name", "IPA")
+            .queryParam("style", BeerStyle.IPA.name()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath('$.size()', is(310)))
     }
 }

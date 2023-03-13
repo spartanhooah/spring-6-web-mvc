@@ -6,6 +6,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.frey.spring6webmvc.exception.NotFoundException;
+import net.frey.spring6webmvc.model.BeerStyle;
 import net.frey.spring6webmvc.model.dto.BeerDTO;
 import net.frey.spring6webmvc.service.BeerService;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -31,8 +33,10 @@ public class BeerController {
 
     // @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
     @GetMapping
-    public List<BeerDTO> listBeers() {
-        return beerService.listBeers();
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String name,
+                                   @RequestParam(required = false) BeerStyle style,
+                                   @RequestParam(required = false) Boolean showInventory) {
+        return beerService.listBeers(name, style, showInventory);
     }
 
     @GetMapping("/{beerId}")

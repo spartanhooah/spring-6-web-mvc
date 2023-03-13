@@ -16,13 +16,6 @@ class BeerRepositoryTest extends Specification {
     @Autowired
     BeerRepository beerRepository
 
-    @Autowired
-    BootstrapData bootstrapData
-
-    void setup() {
-        bootstrapData.run()
-    }
-
     def "check pre-populated data"() {
         expect:
         beerRepository.count() == 2410
@@ -45,7 +38,7 @@ class BeerRepositoryTest extends Specification {
 
     def "save a beer with a long name"() {
         when:
-        def savedBeer = beerRepository.save(BeerEntity.builder()
+        beerRepository.save(BeerEntity.builder()
             .beerName("My Beer 123456543212345654321234565432112345654323456543")
             .beerStyle(BeerStyle.ALE)
             .upc("123456")
@@ -56,5 +49,21 @@ class BeerRepositoryTest extends Specification {
 
         then:
         thrown(ConstraintViolationException)
+    }
+
+    def "test get list by name"() {
+        when:
+        def result = beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%")
+
+        then:
+        result.size() == 336
+    }
+
+    def "test get list by style" () {
+        when:
+        def result = beerRepository.findAllByBeerStyle(BeerStyle.LAGER)
+
+        then:
+        result.size() == 39
     }
 }
