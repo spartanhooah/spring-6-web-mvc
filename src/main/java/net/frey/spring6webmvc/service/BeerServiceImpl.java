@@ -8,13 +8,14 @@ import static org.springframework.util.StringUtils.hasText;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import net.frey.spring6webmvc.model.BeerStyle;
 import net.frey.spring6webmvc.model.dto.BeerDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -67,8 +68,13 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> listBeers(String name, BeerStyle style, Boolean showInventory) {
-        return new ArrayList<>(beerMap.values());
+    public Page<BeerDTO> listBeers(
+            String name,
+            BeerStyle style,
+            Boolean showInventory,
+            Integer pageNumber,
+            Integer pageSize) {
+        return new PageImpl<>(new ArrayList<>(beerMap.values()));
     }
 
     @Override

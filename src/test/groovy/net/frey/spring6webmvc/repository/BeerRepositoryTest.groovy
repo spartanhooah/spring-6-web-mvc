@@ -53,7 +53,7 @@ class BeerRepositoryTest extends Specification {
 
     def "test get list by name"() {
         when:
-        def result = beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%")
+        def result = beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%", null)
 
         then:
         result.size() == 336
@@ -61,7 +61,7 @@ class BeerRepositoryTest extends Specification {
 
     def "test get list by style" () {
         when:
-        def result = beerRepository.findAllByBeerStyle(BeerStyle.LAGER)
+        def result = beerRepository.findAllByBeerStyle(BeerStyle.LAGER, null)
 
         then:
         result.size() == 39

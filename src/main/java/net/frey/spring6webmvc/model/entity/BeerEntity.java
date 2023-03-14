@@ -53,11 +53,9 @@ public class BeerEntity {
 
     @NotNull private BigDecimal price;
 
-    @CreationTimestamp
-    private LocalDateTime createdDate;
+    @CreationTimestamp private LocalDateTime createdDate;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedDate;
+    @UpdateTimestamp private LocalDateTime updatedDate;
 
     @Override
     public int hashCode() {

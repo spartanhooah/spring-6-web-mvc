@@ -1,7 +1,7 @@
 package net.frey.spring6webmvc.controller;
 
 import jakarta.validation.Valid;
-import java.util.List;
+
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,7 @@ import net.frey.spring6webmvc.exception.NotFoundException;
 import net.frey.spring6webmvc.model.BeerStyle;
 import net.frey.spring6webmvc.model.dto.BeerDTO;
 import net.frey.spring6webmvc.service.BeerService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +34,13 @@ public class BeerController {
 
     // @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
     @GetMapping
-    public List<BeerDTO> listBeers(@RequestParam(required = false) String name,
-                                   @RequestParam(required = false) BeerStyle style,
-                                   @RequestParam(required = false) Boolean showInventory) {
-        return beerService.listBeers(name, style, showInventory);
+    public Page<BeerDTO> listBeers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) BeerStyle style,
+            @RequestParam(required = false) Boolean showInventory,
+            @RequestParam(required = false) Integer pageNumber,
+            @RequestParam(required = false) Integer pageSize) {
+        return beerService.listBeers(name, style, showInventory, pageNumber, pageSize);
     }
 
     @GetMapping("/{beerId}")

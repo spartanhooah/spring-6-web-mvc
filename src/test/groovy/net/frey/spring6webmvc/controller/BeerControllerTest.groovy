@@ -43,7 +43,7 @@ class BeerControllerTest extends Specification {
 
     def "get beer by ID"() {
         given:
-        def testBeer = impl.listBeers(null, null, false)[0]
+        def testBeer = impl.listBeers(null, null, false, 1, 25)[0]
         beerService.getBeerById(testBeer.id) >> Optional.of(testBeer)
 
         expect:
@@ -56,21 +56,21 @@ class BeerControllerTest extends Specification {
 
     def "get all beers"() {
         given:
-        beerService.listBeers(null, null, null) >> impl.listBeers(null, null, false)
+        beerService.listBeers(*_) >> impl.listBeers(null, null, false, 1, 25)
 
         expect:
         mockMvc.perform(get(PATH))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
-            .andExpect(jsonPath('$.length()', is(3)))
+            .andExpect(jsonPath('$.content.length()', is(3)))
     }
 
     def "create a beer"() {
         given:
-        def beer = impl.listBeers(null, null, false)[0]
+        def beer = impl.listBeers(null, null, false, 1, 25)[0]
         beer.version = 0
         beer.id = null
-        beerService.saveNewBeer(_ as BeerDTO) >> impl.listBeers(null, null, false)[1]
+        beerService.saveNewBeer(_ as BeerDTO) >> impl.listBeers(null, null, false, 1, 25)[1]
 
         expect:
         mockMvc.perform(post(PATH)
@@ -82,7 +82,7 @@ class BeerControllerTest extends Specification {
 
     def "update a beer"() {
         given:
-        def beer = impl.listBeers(null, null, false)[0]
+        def beer = impl.listBeers(null, null, false, 1, 25)[0]
 
         1 * beerService.updateBeerById(_ as UUID, _ as BeerDTO) >> Optional.of(beer)
 
@@ -95,7 +95,7 @@ class BeerControllerTest extends Specification {
 
     def "delete a beer"() {
         given:
-        def beer = impl.listBeers(null, null, false)[0]
+        def beer = impl.listBeers(null, null, false, 1, 25)[0]
 
         1 * beerService.delete({ it == beer.id }) >> true
 
@@ -106,7 +106,7 @@ class BeerControllerTest extends Specification {
 
     def "update a beer via PATCH"() {
         given:
-        def beer = impl.listBeers(null, null, false)[0]
+        def beer = impl.listBeers(null, null, false, 1, 25)[0]
         def beerMap = ["beerName": "new name"]
 
         1 * beerService.patchBeer({ it == beer.id }, { it.beerName == "new name" })
@@ -139,7 +139,7 @@ class BeerControllerTest extends Specification {
 
     def "return a 400 for trying to update a beer by sending a blank name"() {
         given:
-        def beer = impl.listBeers(null, null, false)[0]
+        def beer = impl.listBeers(null, null, false, 1, 25)[0]
         beer.beerName = ""
 
         expect:

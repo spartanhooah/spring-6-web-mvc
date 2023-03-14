@@ -51,7 +51,7 @@ class BeerControllerIntegrationTest extends Specification {
 
     def "list all beers"() {
         expect:
-        controller.listBeers(null, null, false).size() == 2410
+        controller.listBeers(null, null, false, 1, 2410).size() == 1000
     }
 
     @Rollback
@@ -61,7 +61,7 @@ class BeerControllerIntegrationTest extends Specification {
         repository.deleteAll()
 
         expect:
-        controller.listBeers(null, null, false).size() == 0
+        controller.listBeers(null, null, false, 1, 25).size() == 0
     }
 
     def "get a beer by ID"() {
@@ -197,17 +197,19 @@ class BeerControllerIntegrationTest extends Specification {
     def "list beers by name"() {
         expect:
         mockMvc.perform(get(PATH)
-            .queryParam("name", "IPA"))
+            .queryParam("name", "IPA")
+            .queryParam("pageSize", "800"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath('$.size()', is(336)))
+            .andExpect(jsonPath('$.content.size()', is(336)))
     }
 
     def "list beers by style"() {
         expect:
         mockMvc.perform(get(PATH)
-            .queryParam("style", "IPA"))
+            .queryParam("style", "IPA")
+            .queryParam("pageSize", "800"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath('$.size()', is(547)))
+            .andExpect(jsonPath('$.content.size()', is(547)))
     }
 
     def "list beers by style and name and show inventory"() {
@@ -217,8 +219,8 @@ class BeerControllerIntegrationTest extends Specification {
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "TRUE"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath('$.size()', is(310)))
-            .andExpect(jsonPath('$.[0].quantityOnHand', is(notNullValue())))
+            .andExpect(jsonPath('$.content.size()', is(25)))
+            .andExpect(jsonPath('$.content[0].quantityOnHand', is(notNullValue())))
     }
 
     def "list beers by style and name and don't show inventory"() {
@@ -228,8 +230,8 @@ class BeerControllerIntegrationTest extends Specification {
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "FALSE"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath('$.size()', is(310)))
-            .andExpect(jsonPath('$.[0].quantityOnHand', is(nullValue())))
+            .andExpect(jsonPath('$.content.size()', is(25)))
+            .andExpect(jsonPath('$.content[0].quantityOnHand', is(nullValue())))
     }
 
     def "list beers by style and name"() {
@@ -238,6 +240,19 @@ class BeerControllerIntegrationTest extends Specification {
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name()))
             .andExpect(status().isOk())
-            .andExpect(jsonPath('$.size()', is(310)))
+            .andExpect(jsonPath('$.content.size()', is(25)))
+    }
+
+    def "list beers by style and name and show inventory, get 2nd page of size 50"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .queryParam("name", "IPA")
+            .queryParam("style", BeerStyle.IPA.name())
+            .queryParam("showInventory", "TRUE")
+            .queryParam("pageNumber", "2")
+            .queryParam("pageSize", "50"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath('$.content.size()', is(50)))
+            .andExpect(jsonPath('$.content[0].quantityOnHand', is(notNullValue())))
     }
 }

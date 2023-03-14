@@ -38,11 +38,9 @@ public class CustomerEntity {
 
     private String name;
 
-    @CreationTimestamp
-    private LocalDateTime createdDate;
+    @CreationTimestamp private LocalDateTime createdDate;
 
-    @UpdateTimestamp
-    private LocalDateTime lastModified;
+    @UpdateTimestamp private LocalDateTime lastModified;
     private String email;
 
     @Override
