@@ -82,8 +82,10 @@ public class BeerServiceJpa implements BeerService {
         return PageRequest.of(queryPageNumber, queryPageSize, sort);
     }
 
-    private Page<BeerEntity> listBeersByNameAndStyle(String name, BeerStyle style, PageRequest pageRequest) {
-        return repository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + name + "%", style, pageRequest);
+    private Page<BeerEntity> listBeersByNameAndStyle(
+            String name, BeerStyle style, PageRequest pageRequest) {
+        return repository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle(
+                "%" + name + "%", style, pageRequest);
     }
 
     private Page<BeerEntity> listBeersByStyle(BeerStyle style, PageRequest pageRequest) {

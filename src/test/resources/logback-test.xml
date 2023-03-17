@@ -1,0 +1,11 @@
+<configuration>
+    <appender name="Console-Appender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout>
+            <pattern>%msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="org.apache.commons.beanutils.converters" level="info">
+        <appender-ref ref="Console-Appender"/>
+    </logger>
+</configuration>
