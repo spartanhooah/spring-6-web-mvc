@@ -1,11 +1,13 @@
 package net.frey.spring6webmvc.model.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -34,7 +36,8 @@ public class BeerOrder {
             Timestamp lastModifiedDate,
             String customerRef,
             CustomerEntity customer,
-            Set<BeerOrderLine> lineItems) {
+            Set<BeerOrderLine> lineItems,
+            BeerOrderShipment beerOrderShipment) {
         this.id = id;
         this.version = version;
         this.createdDate = createdDate;
@@ -42,6 +45,7 @@ public class BeerOrder {
         this.customerRef = customerRef;
         this.setCustomer(customer);
         this.lineItems = lineItems;
+        setBeerOrderShipment(beerOrderShipment);
     }
 
     @Id
@@ -70,8 +74,16 @@ public class BeerOrder {
     @OneToMany(mappedBy = "order")
     private Set<BeerOrderLine> lineItems;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private BeerOrderShipment beerOrderShipment;
+
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
         customer.getBeerOrders().add(this);
+    }
+
+    public void setBeerOrderShipment(BeerOrderShipment shipment) {
+        this.beerOrderShipment = beerOrderShipment;
+        beerOrderShipment.setBeerOrder(this);
     }
 }

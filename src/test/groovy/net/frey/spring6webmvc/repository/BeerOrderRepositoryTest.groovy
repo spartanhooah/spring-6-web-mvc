@@ -2,6 +2,7 @@ package net.frey.spring6webmvc.repository
 
 import jakarta.transaction.Transactional
 import net.frey.spring6webmvc.model.entity.BeerOrder
+import net.frey.spring6webmvc.model.entity.BeerOrderShipment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
@@ -31,6 +32,9 @@ class BeerOrderRepositoryTest extends Specification {
         def order = BeerOrder.builder()
             .customerRef("Test order")
             .customer(testCustomer)
+            .beerOrderShipment(BeerOrderShipment.builder()
+                .trackingNumber("1234at")
+                .build())
             .build()
 
         when:
