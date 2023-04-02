@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(BeerController.PATH)
 @RequiredArgsConstructor
 public class BeerController {
-    public static final String PATH = "/api/v1/beer";
+    public static final String PATH = "/api/v1/beers";
     private final BeerService beerService;
 
     // @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
