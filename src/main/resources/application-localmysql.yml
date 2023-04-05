@@ -9,7 +9,6 @@ spring:
       maximum-pool-size: 5
   flyway:
     enabled: true
-
   jpa:
     hibernate:
       ddl-auto: update

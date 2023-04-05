@@ -14,6 +14,7 @@ import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.BeerController.PATH
 import static org.hamcrest.core.Is.is
 import static org.springframework.http.MediaType.APPLICATION_JSON
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
@@ -59,7 +60,8 @@ class BeerControllerTest extends Specification {
         beerService.listBeers(*_) >> impl.listBeers(null, null, false, 1, 25)
 
         expect:
-        mockMvc.perform(get(PATH))
+        mockMvc.perform(get(PATH)
+            .with(httpBasic("user1", "password")))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.content.length()', is(3)))

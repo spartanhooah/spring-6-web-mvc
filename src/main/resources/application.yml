@@ -3,6 +3,10 @@ spring:
     default: localmysql
   flyway:
     enabled: false
+  security:
+    user:
+      name: user1
+      password: password
 
 logging:
   level:
