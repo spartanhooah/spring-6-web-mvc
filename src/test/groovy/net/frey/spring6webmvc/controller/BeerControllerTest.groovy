@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.web.servlet.MockMvc
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import static java.util.UUID.randomUUID
@@ -29,10 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import(SecurityConfig)
 @WebMvcTest(BeerController)
-class BeerControllerTest extends Specification {
-    static final def USERNAME = "user1"
-    static final def PASSWORD = "password"
-
+class BeerControllerTest extends ControllerTestSetup {
     @Autowired
     MockMvc mockMvc
 
@@ -54,7 +52,8 @@ class BeerControllerTest extends Specification {
         beerService.getBeerById(testBeer.id) >> Optional.of(testBeer)
 
         expect:
-        mockMvc.perform(get("$PATH/$testBeer.id"))
+        mockMvc.perform(get("$PATH/$testBeer.id")
+            .with(httpBasic(USERNAME, PASSWORD)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.id', is(testBeer.id.toString())))
@@ -136,7 +135,8 @@ class BeerControllerTest extends Specification {
         beerService.getBeerById(_ as UUID) >> Optional.empty()
 
         expect:
-        mockMvc.perform(get("$PATH/${randomUUID()}"))
+        mockMvc.perform(get("$PATH/${randomUUID()}")
+            .with(httpBasic(USERNAME, PASSWORD)))
             .andExpect(status().isNotFound())
     }
 
@@ -164,5 +164,21 @@ class BeerControllerTest extends Specification {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath('$.length()', is(1)))
             .andReturn()
+    }
+
+    def "Return 401 for unauthorized user"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .accept(APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+    }
+
+    @Ignore("Currently not working as expected")
+    def "Return 403 for forbidden user"() {
+        expect:
+        mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, "wrong"))
+            .accept(APPLICATION_JSON))
+            .andExpect(status().isForbidden())
     }
 }

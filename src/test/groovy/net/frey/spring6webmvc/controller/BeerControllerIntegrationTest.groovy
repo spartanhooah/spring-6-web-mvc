@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
-import spock.lang.Specification
 
 import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.BeerController.PATH
@@ -21,13 +20,15 @@ import static org.hamcrest.core.Is.is
 import static org.hamcrest.core.IsNull.notNullValue
 import static org.hamcrest.core.IsNull.nullValue
 import static org.springframework.http.MediaType.APPLICATION_JSON
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
-class BeerControllerIntegrationTest extends Specification {
+class BeerControllerIntegrationTest extends ControllerTestSetup {
     @Autowired
     BeerController controller
 
@@ -46,7 +47,9 @@ class BeerControllerIntegrationTest extends Specification {
     def mockMvc
 
     void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+            .apply(springSecurity())
+            .build()
     }
 
     def "list all beers"() {
@@ -188,6 +191,7 @@ class BeerControllerIntegrationTest extends Specification {
 
         expect:
         mockMvc.perform(patch("$PATH/$beer.id")
+            .with(httpBasic(USERNAME, PASSWORD))
             .contentType(APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(beerMap)))
             .andExpect(status().isBadRequest())
@@ -197,6 +201,7 @@ class BeerControllerIntegrationTest extends Specification {
     def "list beers by name"() {
         expect:
         mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .queryParam("name", "IPA")
             .queryParam("pageSize", "800"))
             .andExpect(status().isOk())
@@ -206,6 +211,7 @@ class BeerControllerIntegrationTest extends Specification {
     def "list beers by style"() {
         expect:
         mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .queryParam("style", "IPA")
             .queryParam("pageSize", "800"))
             .andExpect(status().isOk())
@@ -215,6 +221,7 @@ class BeerControllerIntegrationTest extends Specification {
     def "list beers by style and name and show inventory"() {
         expect:
         mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "TRUE"))
@@ -226,6 +233,7 @@ class BeerControllerIntegrationTest extends Specification {
     def "list beers by style and name and don't show inventory"() {
         expect:
         mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "FALSE"))
@@ -237,6 +245,7 @@ class BeerControllerIntegrationTest extends Specification {
     def "list beers by style and name"() {
         expect:
         mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name()))
             .andExpect(status().isOk())
@@ -246,6 +255,7 @@ class BeerControllerIntegrationTest extends Specification {
     def "list beers by style and name and show inventory, get 2nd page of size 50"() {
         expect:
         mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "TRUE")

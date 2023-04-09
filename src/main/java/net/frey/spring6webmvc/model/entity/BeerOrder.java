@@ -83,7 +83,7 @@ public class BeerOrder {
     }
 
     public void setBeerOrderShipment(BeerOrderShipment shipment) {
-        this.beerOrderShipment = beerOrderShipment;
+        this.beerOrderShipment = shipment;
         beerOrderShipment.setBeerOrder(this);
     }
 }

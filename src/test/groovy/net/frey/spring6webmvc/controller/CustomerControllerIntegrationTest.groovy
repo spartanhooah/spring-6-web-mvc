@@ -14,7 +14,7 @@ import spock.lang.Specification
 import static java.util.UUID.randomUUID
 
 @SpringBootTest
-class CustomerControllerIntegrationTest extends Specification {
+class CustomerControllerIntegrationTest extends ControllerTestSetup {
     public static final String CUSTOMER_NAME = "The New Guy"
 
     @Autowired

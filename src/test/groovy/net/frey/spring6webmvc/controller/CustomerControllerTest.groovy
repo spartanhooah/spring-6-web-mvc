@@ -28,10 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import(SecurityConfig)
 @WebMvcTest(CustomerController)
-class CustomerControllerTest extends Specification {
-    static final def USERNAME = "user1"
-    static final def PASSWORD = "password"
-
+class CustomerControllerTest extends ControllerTestSetup {
     @Autowired
     MockMvc mockMvc
 
