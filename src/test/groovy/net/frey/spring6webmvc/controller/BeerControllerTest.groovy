@@ -1,12 +1,14 @@
 package net.frey.spring6webmvc.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import net.frey.spring6webmvc.config.SecurityConfig
 import net.frey.spring6webmvc.model.dto.BeerDTO
 import net.frey.spring6webmvc.service.BeerService
 import net.frey.spring6webmvc.service.BeerServiceImpl
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
@@ -25,8 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+@Import(SecurityConfig)
 @WebMvcTest(BeerController)
 class BeerControllerTest extends Specification {
+    static final def USERNAME = "user1"
+    static final def PASSWORD = "password"
+
     @Autowired
     MockMvc mockMvc
 
@@ -61,7 +67,8 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic("user1", "password")))
+            .with(httpBasic(USERNAME, PASSWORD))
+            .accept(APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.content.length()', is(3)))
@@ -76,6 +83,7 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(post(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isCreated())
@@ -90,6 +98,7 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
+            .with(httpBasic(USERNAME, PASSWORD))
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isNoContent())
@@ -102,7 +111,8 @@ class BeerControllerTest extends Specification {
         1 * beerService.delete({ it == beer.id }) >> true
 
         expect:
-        mockMvc.perform(delete("$PATH/$beer.id"))
+        mockMvc.perform(delete("$PATH/$beer.id")
+            .with(httpBasic(USERNAME, PASSWORD)))
             .andExpect(status().isNoContent())
     }
 
@@ -115,6 +125,7 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(patch("$PATH/$beer.id")
+            .with(httpBasic(USERNAME, PASSWORD))
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beerMap)))
             .andExpect(status().isNoContent())
@@ -132,6 +143,7 @@ class BeerControllerTest extends Specification {
     def "return a 400 for adding a beer with no name"() {
         expect:
         mockMvc.perform(post(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(BeerDTO.builder().build())))
             .andExpect(status().isBadRequest())
@@ -146,6 +158,7 @@ class BeerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
+            .with(httpBasic(USERNAME, PASSWORD))
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isBadRequest())

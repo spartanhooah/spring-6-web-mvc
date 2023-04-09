@@ -1,12 +1,14 @@
 package net.frey.spring6webmvc.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import net.frey.spring6webmvc.config.SecurityConfig
 import net.frey.spring6webmvc.model.dto.CustomerDTO
 import net.frey.spring6webmvc.service.CustomerService
 import net.frey.spring6webmvc.service.CustomerServiceImpl
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
@@ -14,6 +16,7 @@ import spock.lang.Specification
 import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.CustomerController.PATH
 import static org.hamcrest.core.Is.is
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -23,8 +26,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+@Import(SecurityConfig)
 @WebMvcTest(CustomerController)
 class CustomerControllerTest extends Specification {
+    static final def USERNAME = "user1"
+    static final def PASSWORD = "password"
+
     @Autowired
     MockMvc mockMvc
 
@@ -47,6 +54,7 @@ class CustomerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(get("$PATH/$testCustomer.id")
+            .with(httpBasic(USERNAME, PASSWORD))
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -60,6 +68,7 @@ class CustomerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(get(PATH)
+            .with(httpBasic(USERNAME, PASSWORD))
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -76,6 +85,7 @@ class CustomerControllerTest extends Specification {
         expect:
         mockMvc.perform(post(PATH)
             .accept(MediaType.APPLICATION_JSON)
+            .with(httpBasic(USERNAME, PASSWORD))
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(customer)))
             .andExpect(status().isCreated())
@@ -90,6 +100,7 @@ class CustomerControllerTest extends Specification {
 
         expect:
         mockMvc.perform(put("$PATH/$customer.id")
+            .with(httpBasic(USERNAME, PASSWORD))
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(customer)))
@@ -103,7 +114,8 @@ class CustomerControllerTest extends Specification {
         1 * customerService.delete({ it == customer.id }) >> true
 
         expect:
-        mockMvc.perform(delete("$PATH/$customer.id"))
+        mockMvc.perform(delete("$PATH/$customer.id")
+            .with(httpBasic(USERNAME, PASSWORD)))
             .andExpect(status().isNoContent())
     }
 
@@ -112,7 +124,8 @@ class CustomerControllerTest extends Specification {
         customerService.getCustomerById(_ as UUID) >> Optional.empty()
 
         expect:
-        mockMvc.perform(get("$PATH/${randomUUID()}"))
+        mockMvc.perform(get("$PATH/${randomUUID()}")
+            .with(httpBasic(USERNAME, PASSWORD)))
             .andExpect(status().isNotFound())
     }
 }
