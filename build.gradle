@@ -78,3 +78,5 @@ spotless {
 		googleJavaFormat().aosp()
 	}
 }
+
+compileJava.dependsOn(spotlessApply)
