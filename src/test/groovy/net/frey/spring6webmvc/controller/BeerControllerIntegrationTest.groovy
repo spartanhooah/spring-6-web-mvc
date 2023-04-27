@@ -20,7 +20,6 @@ import static org.hamcrest.core.Is.is
 import static org.hamcrest.core.IsNull.notNullValue
 import static org.hamcrest.core.IsNull.nullValue
 import static org.springframework.http.MediaType.APPLICATION_JSON
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
@@ -191,7 +190,7 @@ class BeerControllerIntegrationTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(patch("$PATH/$beer.id")
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .contentType(APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(beerMap)))
             .andExpect(status().isBadRequest())
@@ -201,7 +200,7 @@ class BeerControllerIntegrationTest extends ControllerTestSetup {
     def "list beers by name"() {
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .queryParam("name", "IPA")
             .queryParam("pageSize", "800"))
             .andExpect(status().isOk())
@@ -211,7 +210,7 @@ class BeerControllerIntegrationTest extends ControllerTestSetup {
     def "list beers by style"() {
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .queryParam("style", "IPA")
             .queryParam("pageSize", "800"))
             .andExpect(status().isOk())
@@ -221,7 +220,7 @@ class BeerControllerIntegrationTest extends ControllerTestSetup {
     def "list beers by style and name and show inventory"() {
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "TRUE"))
@@ -233,7 +232,7 @@ class BeerControllerIntegrationTest extends ControllerTestSetup {
     def "list beers by style and name and don't show inventory"() {
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "FALSE"))
@@ -245,7 +244,7 @@ class BeerControllerIntegrationTest extends ControllerTestSetup {
     def "list beers by style and name"() {
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name()))
             .andExpect(status().isOk())
@@ -255,7 +254,7 @@ class BeerControllerIntegrationTest extends ControllerTestSetup {
     def "list beers by style and name and show inventory, get 2nd page of size 50"() {
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .queryParam("name", "IPA")
             .queryParam("style", BeerStyle.IPA.name())
             .queryParam("showInventory", "TRUE")

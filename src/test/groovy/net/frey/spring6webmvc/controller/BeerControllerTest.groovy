@@ -55,7 +55,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get("$PATH/$testBeer.id")
-            .with(setupJwt()))
+            .with(CONFIGURED_JWT))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.id', is(testBeer.id.toString())))
@@ -68,7 +68,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get(PATH)
-            .with(setupJwt())
+            .with(CONFIGURED_JWT)
             .accept(APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
@@ -84,7 +84,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(post(PATH)
-            .with(setupJwt())
+            .with(CONFIGURED_JWT)
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isCreated())
@@ -99,7 +99,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
-            .with(setupJwt())
+            .with(CONFIGURED_JWT)
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isNoContent())
@@ -113,7 +113,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(delete("$PATH/$beer.id")
-            .with(setupJwt()))
+            .with(CONFIGURED_JWT))
             .andExpect(status().isNoContent())
     }
 
@@ -126,7 +126,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(patch("$PATH/$beer.id")
-            .with(setupJwt())
+            .with(CONFIGURED_JWT)
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beerMap)))
             .andExpect(status().isNoContent())
@@ -138,14 +138,14 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get("$PATH/${randomUUID()}")
-            .with(setupJwt()))
+            .with(CONFIGURED_JWT))
             .andExpect(status().isNotFound())
     }
 
     def "return a 400 for adding a beer with no name"() {
         expect:
         mockMvc.perform(post(PATH)
-            .with(setupJwt())
+            .with(CONFIGURED_JWT)
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(BeerDTO.builder().build())))
             .andExpect(status().isBadRequest())
@@ -160,7 +160,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
-            .with(setupJwt())
+            .with(CONFIGURED_JWT)
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isBadRequest())
@@ -175,22 +175,11 @@ class BeerControllerTest extends ControllerTestSetup {
             .andExpect(status().isUnauthorized())
     }
 
-    def setupJwt() {
-        jwt().jwt { jwt ->
-            jwt.claims { claims ->
-                claims.put("scope", "message.read")
-                claims.put("scope", "message.write")
-            }
-                .subject("messaging-client")
-                .notBefore(Instant.now().minusSeconds(5L))
-        }
-    }
-
-    @Ignore("Currently not working as expected")
+    @Ignore("Need to figure out how to do this with a JWT")
     def "Return 403 for forbidden user"() {
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, "wrong"))
+            .with(jwt())
             .accept(APPLICATION_JSON))
             .andExpect(status().isForbidden())
     }
