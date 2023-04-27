@@ -11,13 +11,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Ignore
-import spock.lang.Specification
+
+import java.time.Instant
 
 import static java.util.UUID.randomUUID
 import static net.frey.spring6webmvc.controller.BeerController.PATH
 import static org.hamcrest.core.Is.is
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
@@ -53,7 +55,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get("$PATH/$testBeer.id")
-            .with(httpBasic(USERNAME, PASSWORD)))
+            .with(setupJwt()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.id', is(testBeer.id.toString())))
@@ -66,7 +68,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(setupJwt())
             .accept(APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(APPLICATION_JSON))
@@ -82,7 +84,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(post(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(setupJwt())
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isCreated())
@@ -97,7 +99,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(setupJwt())
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isNoContent())
@@ -111,7 +113,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(delete("$PATH/$beer.id")
-            .with(httpBasic(USERNAME, PASSWORD)))
+            .with(setupJwt()))
             .andExpect(status().isNoContent())
     }
 
@@ -124,7 +126,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(patch("$PATH/$beer.id")
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(setupJwt())
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beerMap)))
             .andExpect(status().isNoContent())
@@ -136,14 +138,14 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get("$PATH/${randomUUID()}")
-            .with(httpBasic(USERNAME, PASSWORD)))
+            .with(setupJwt()))
             .andExpect(status().isNotFound())
     }
 
     def "return a 400 for adding a beer with no name"() {
         expect:
         mockMvc.perform(post(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(setupJwt())
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(BeerDTO.builder().build())))
             .andExpect(status().isBadRequest())
@@ -158,7 +160,7 @@ class BeerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(put("$PATH/$beer.id")
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(setupJwt())
             .contentType(APPLICATION_JSON)
             .content(mapper.writeValueAsString(beer)))
             .andExpect(status().isBadRequest())
@@ -171,6 +173,17 @@ class BeerControllerTest extends ControllerTestSetup {
         mockMvc.perform(get(PATH)
             .accept(APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
+    }
+
+    def setupJwt() {
+        jwt().jwt { jwt ->
+            jwt.claims { claims ->
+                claims.put("scope", "message.read")
+                claims.put("scope", "message.write")
+            }
+                .subject("messaging-client")
+                .notBefore(Instant.now().minusSeconds(5L))
+        }
     }
 
     @Ignore("Currently not working as expected")
