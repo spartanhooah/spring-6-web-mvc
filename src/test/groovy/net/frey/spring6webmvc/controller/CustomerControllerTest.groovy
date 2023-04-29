@@ -51,7 +51,7 @@ class CustomerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get("$PATH/$testCustomer.id")
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -65,7 +65,7 @@ class CustomerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get(PATH)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -82,7 +82,7 @@ class CustomerControllerTest extends ControllerTestSetup {
         expect:
         mockMvc.perform(post(PATH)
             .accept(MediaType.APPLICATION_JSON)
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(customer)))
             .andExpect(status().isCreated())
@@ -97,7 +97,7 @@ class CustomerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(put("$PATH/$customer.id")
-            .with(httpBasic(USERNAME, PASSWORD))
+            .with(CONFIGURED_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(customer)))
@@ -112,7 +112,7 @@ class CustomerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(delete("$PATH/$customer.id")
-            .with(httpBasic(USERNAME, PASSWORD)))
+            .with(CONFIGURED_JWT))
             .andExpect(status().isNoContent())
     }
 
@@ -122,7 +122,7 @@ class CustomerControllerTest extends ControllerTestSetup {
 
         expect:
         mockMvc.perform(get("$PATH/${randomUUID()}")
-            .with(httpBasic(USERNAME, PASSWORD)))
+            .with(CONFIGURED_JWT))
             .andExpect(status().isNotFound())
     }
 }

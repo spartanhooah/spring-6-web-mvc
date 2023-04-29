@@ -42,11 +42,7 @@ class BeerControllerTest extends ControllerTestSetup {
     @SpringBean
     BeerService beerService = Mock()
 
-    BeerService impl
-
-    void setup() {
-        impl = new BeerServiceImpl()
-    }
+    BeerService impl = new BeerServiceImpl()
 
     def "get beer by ID"() {
         given:
