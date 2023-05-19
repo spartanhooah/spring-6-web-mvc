@@ -44,6 +44,19 @@ class BeerControllerTest extends ControllerTestSetup {
 
     BeerService impl = new BeerServiceImpl()
 
+    def "get all beers"() {
+        given:
+        beerService.listBeers(*_) >> impl.listBeers(null, null, false, 1, 25)
+
+        expect:
+        mockMvc.perform(get(PATH)
+            .with(CONFIGURED_JWT)
+            .accept(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(APPLICATION_JSON))
+            .andExpect(jsonPath('$.content.length()', is(3)))
+    }
+
     def "get beer by ID"() {
         given:
         def testBeer = impl.listBeers(null, null, false, 1, 25)[0]
@@ -56,19 +69,6 @@ class BeerControllerTest extends ControllerTestSetup {
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath('$.id', is(testBeer.id.toString())))
             .andExpect(jsonPath('$.beerName', is(testBeer.beerName)))
-    }
-
-    def "get all beers"() {
-        given:
-        beerService.listBeers(*_) >> impl.listBeers(null, null, false, 1, 25)
-
-        expect:
-        mockMvc.perform(get(PATH)
-            .with(CONFIGURED_JWT)
-            .accept(APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(APPLICATION_JSON))
-            .andExpect(jsonPath('$.content.length()', is(3)))
     }
 
     def "create a beer"() {
