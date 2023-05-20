@@ -75,6 +75,18 @@ test {
 	}
 }
 
+rootProject.afterEvaluate(){
+	def forkedSpringBootRun = project.tasks.named("forkedSpringBootRun")
+	forkedSpringBootRun.configure {
+		doNotTrackState("See https://github.com/springdoc/springdoc-openapi-gradle-plugin/issues/102")
+	}
+}
+
+openApi {
+	outputDir.set(file("$buildDir/docs"))
+	outputFileName.set("openapi.yaml")
+}
+
 compileJava {
 	options.compilerArgs += [
 		'-Amapstruct.defaultComponentModel=spring'
