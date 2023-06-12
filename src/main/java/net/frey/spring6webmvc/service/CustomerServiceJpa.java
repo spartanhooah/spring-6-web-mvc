@@ -46,9 +46,7 @@ public class CustomerServiceJpa implements CustomerService {
                         foundCustomer -> {
                             foundCustomer.setName(customer.getName());
 
-                            atomicReference.set(
-                                    Optional.of(
-                                            mapper.entityToDto(repository.save(foundCustomer))));
+                            atomicReference.set(Optional.of(mapper.entityToDto(repository.save(foundCustomer))));
                         },
                         () -> atomicReference.set(Optional.empty()));
 

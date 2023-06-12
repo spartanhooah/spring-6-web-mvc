@@ -33,9 +33,11 @@ public class BeerOrderShipment {
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
-    @Version private Long version;
+    @Version
+    private Long version;
 
-    @OneToOne private BeerOrder beerOrder;
+    @OneToOne
+    private BeerOrder beerOrder;
 
     private String trackingNumber;
 
@@ -48,5 +50,6 @@ public class BeerOrderShipment {
     @Column(updatable = false)
     private Timestamp createdDate;
 
-    @UpdateTimestamp private Timestamp lastModifiedDate;
+    @UpdateTimestamp
+    private Timestamp lastModifiedDate;
 }

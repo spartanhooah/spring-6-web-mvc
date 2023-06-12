@@ -33,23 +33,29 @@ public class BeerOrderLine {
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
-    @Version private Long version;
+    @Version
+    private Long version;
 
     @CreationTimestamp
     @Column(updatable = false)
     private Timestamp createdDate;
 
-    @UpdateTimestamp private Timestamp lastModifiedDate;
+    @UpdateTimestamp
+    private Timestamp lastModifiedDate;
 
     public boolean isNew() {
         return this.id == null;
     }
 
-    @Builder.Default private Integer orderQuantity = 0;
+    @Builder.Default
+    private Integer orderQuantity = 0;
 
-    @Builder.Default private Integer quantityAllocated = 0;
+    @Builder.Default
+    private Integer quantityAllocated = 0;
 
-    @ManyToOne private BeerEntity beer;
+    @ManyToOne
+    private BeerEntity beer;
 
-    @ManyToOne private BeerOrder order;
+    @ManyToOne
+    private BeerOrder order;
 }

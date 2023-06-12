@@ -31,11 +31,7 @@ public class BeerServiceJpa implements BeerService {
 
     @Override
     public Page<BeerDTO> listBeers(
-            String name,
-            BeerStyle style,
-            Boolean showInventory,
-            Integer pageNumber,
-            Integer pageSize) {
+            String name, BeerStyle style, Boolean showInventory, Integer pageNumber, Integer pageSize) {
         Page<BeerEntity> beerPage;
 
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
@@ -82,10 +78,8 @@ public class BeerServiceJpa implements BeerService {
         return PageRequest.of(queryPageNumber, queryPageSize, sort);
     }
 
-    private Page<BeerEntity> listBeersByNameAndStyle(
-            String name, BeerStyle style, PageRequest pageRequest) {
-        return repository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle(
-                "%" + name + "%", style, pageRequest);
+    private Page<BeerEntity> listBeersByNameAndStyle(String name, BeerStyle style, PageRequest pageRequest) {
+        return repository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + name + "%", style, pageRequest);
     }
 
     private Page<BeerEntity> listBeersByStyle(BeerStyle style, PageRequest pageRequest) {
@@ -119,8 +113,7 @@ public class BeerServiceJpa implements BeerService {
                             foundBeer.setUpc(beer.getUpc());
                             foundBeer.setPrice(beer.getPrice());
 
-                            atomicReference.set(
-                                    Optional.of(mapper.entityToDto(repository.save(foundBeer))));
+                            atomicReference.set(Optional.of(mapper.entityToDto(repository.save(foundBeer))));
                         },
                         () -> atomicReference.set(Optional.empty()));
 

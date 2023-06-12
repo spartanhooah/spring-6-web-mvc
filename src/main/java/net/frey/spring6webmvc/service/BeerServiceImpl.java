@@ -24,56 +24,48 @@ public class BeerServiceImpl implements BeerService {
     private final Map<UUID, BeerDTO> beerMap;
 
     public BeerServiceImpl() {
-        BeerDTO beer1 =
-                BeerDTO.builder()
-                        .id(randomUUID())
-                        .version(1)
-                        .beerName("Galaxy Cat")
-                        .beerStyle(BeerStyle.PALE_ALE)
-                        .upc("123456")
-                        .price(new BigDecimal("12.99"))
-                        .quantityOnHand(122)
-                        .createdDate(now())
-                        .updatedDate(now())
-                        .build();
+        BeerDTO beer1 = BeerDTO.builder()
+                .id(randomUUID())
+                .version(1)
+                .beerName("Galaxy Cat")
+                .beerStyle(BeerStyle.PALE_ALE)
+                .upc("123456")
+                .price(new BigDecimal("12.99"))
+                .quantityOnHand(122)
+                .createdDate(now())
+                .updatedDate(now())
+                .build();
 
-        BeerDTO beer2 =
-                BeerDTO.builder()
-                        .id(randomUUID())
-                        .version(1)
-                        .beerName("Crank")
-                        .beerStyle(BeerStyle.PALE_ALE)
-                        .upc("12356222")
-                        .price(new BigDecimal("12.99"))
-                        .quantityOnHand(392)
-                        .createdDate(now())
-                        .updatedDate(now())
-                        .build();
+        BeerDTO beer2 = BeerDTO.builder()
+                .id(randomUUID())
+                .version(1)
+                .beerName("Crank")
+                .beerStyle(BeerStyle.PALE_ALE)
+                .upc("12356222")
+                .price(new BigDecimal("12.99"))
+                .quantityOnHand(392)
+                .createdDate(now())
+                .updatedDate(now())
+                .build();
 
-        BeerDTO beer3 =
-                BeerDTO.builder()
-                        .id(randomUUID())
-                        .version(1)
-                        .beerName("Sunshine City")
-                        .beerStyle(BeerStyle.IPA)
-                        .upc("12346")
-                        .price(new BigDecimal("13.99"))
-                        .quantityOnHand(122)
-                        .createdDate(now())
-                        .updatedDate(now())
-                        .build();
+        BeerDTO beer3 = BeerDTO.builder()
+                .id(randomUUID())
+                .version(1)
+                .beerName("Sunshine City")
+                .beerStyle(BeerStyle.IPA)
+                .upc("12346")
+                .price(new BigDecimal("13.99"))
+                .quantityOnHand(122)
+                .createdDate(now())
+                .updatedDate(now())
+                .build();
 
-        beerMap =
-                new HashMap<>(of(beer1.getId(), beer1, beer2.getId(), beer2, beer3.getId(), beer3));
+        beerMap = new HashMap<>(of(beer1.getId(), beer1, beer2.getId(), beer2, beer3.getId(), beer3));
     }
 
     @Override
     public Page<BeerDTO> listBeers(
-            String name,
-            BeerStyle style,
-            Boolean showInventory,
-            Integer pageNumber,
-            Integer pageSize) {
+            String name, BeerStyle style, Boolean showInventory, Integer pageNumber, Integer pageSize) {
         return new PageImpl<>(new ArrayList<>(beerMap.values()));
     }
 
@@ -84,18 +76,17 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public BeerDTO saveNewBeer(BeerDTO beer) {
-        BeerDTO savedBeer =
-                BeerDTO.builder()
-                        .id(randomUUID())
-                        .createdDate(now())
-                        .updatedDate(now())
-                        .version(beer.getVersion() == 0 ? 1 : beer.getVersion())
-                        .beerName(beer.getBeerName())
-                        .beerStyle(beer.getBeerStyle())
-                        .quantityOnHand(beer.getQuantityOnHand())
-                        .upc(beer.getUpc())
-                        .price(beer.getPrice())
-                        .build();
+        BeerDTO savedBeer = BeerDTO.builder()
+                .id(randomUUID())
+                .createdDate(now())
+                .updatedDate(now())
+                .version(beer.getVersion() == 0 ? 1 : beer.getVersion())
+                .beerName(beer.getBeerName())
+                .beerStyle(beer.getBeerStyle())
+                .quantityOnHand(beer.getQuantityOnHand())
+                .upc(beer.getUpc())
+                .price(beer.getPrice())
+                .build();
 
         beerMap.put(savedBeer.getId(), savedBeer);
 

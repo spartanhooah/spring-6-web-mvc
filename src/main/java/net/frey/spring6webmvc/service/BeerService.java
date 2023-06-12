@@ -7,12 +7,7 @@ import net.frey.spring6webmvc.model.dto.BeerDTO;
 import org.springframework.data.domain.Page;
 
 public interface BeerService {
-    Page<BeerDTO> listBeers(
-            String name,
-            BeerStyle style,
-            Boolean showInventory,
-            Integer pageNumber,
-            Integer pageSize);
+    Page<BeerDTO> listBeers(String name, BeerStyle style, Boolean showInventory, Integer pageNumber, Integer pageSize);
 
     Optional<BeerDTO> getBeerById(UUID id);
 

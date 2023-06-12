@@ -60,8 +60,7 @@ public class BeerController {
     }
 
     @PutMapping("/{beerId}")
-    public ResponseEntity<BeerDTO> updateById(
-            @PathVariable UUID beerId, @Valid @RequestBody BeerDTO beer) {
+    public ResponseEntity<BeerDTO> updateById(@PathVariable UUID beerId, @Valid @RequestBody BeerDTO beer) {
         if (beerService.updateBeerById(beerId, beer).isEmpty()) {
             throw new NotFoundException();
         }
@@ -79,8 +78,7 @@ public class BeerController {
     }
 
     @PatchMapping("/{beerId}")
-    public ResponseEntity<BeerDTO> patchBeer(
-            @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity<BeerDTO> patchBeer(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         beerService.patchBeer(beerId, beer);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

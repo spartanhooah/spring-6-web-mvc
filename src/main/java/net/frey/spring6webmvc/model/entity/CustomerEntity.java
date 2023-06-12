@@ -37,13 +37,17 @@ public class CustomerEntity {
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
-    @Version private int version;
+    @Version
+    private int version;
 
     private String name;
 
-    @CreationTimestamp private LocalDateTime createdDate;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
-    @UpdateTimestamp private LocalDateTime lastModified;
+    @UpdateTimestamp
+    private LocalDateTime lastModified;
+
     private String email;
 
     @Builder.Default
@@ -57,11 +61,9 @@ public class CustomerEntity {
 
         if (getVersion() != that.getVersion()) return false;
         if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null)
+        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+        if (getCreatedDate() != null ? !getCreatedDate().equals(that.getCreatedDate()) : that.getCreatedDate() != null)
             return false;
-        if (getCreatedDate() != null
-                ? !getCreatedDate().equals(that.getCreatedDate())
-                : that.getCreatedDate() != null) return false;
         return getLastModified() != null
                 ? getLastModified().equals(that.getLastModified())
                 : that.getLastModified() == null;

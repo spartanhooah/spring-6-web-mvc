@@ -18,23 +18,21 @@ public class CustomerServiceImpl implements CustomerService {
     private final Map<UUID, CustomerDTO> customerMap;
 
     public CustomerServiceImpl() {
-        CustomerDTO customer1 =
-                CustomerDTO.builder()
-                        .id(randomUUID())
-                        .name("Billie Jean")
-                        .version(1)
-                        .createdDate(now())
-                        .lastModified(now())
-                        .build();
+        CustomerDTO customer1 = CustomerDTO.builder()
+                .id(randomUUID())
+                .name("Billie Jean")
+                .version(1)
+                .createdDate(now())
+                .lastModified(now())
+                .build();
 
-        CustomerDTO customer2 =
-                CustomerDTO.builder()
-                        .id(randomUUID())
-                        .name("Jim Bob")
-                        .version(1)
-                        .createdDate(now())
-                        .lastModified(now())
-                        .build();
+        CustomerDTO customer2 = CustomerDTO.builder()
+                .id(randomUUID())
+                .name("Jim Bob")
+                .version(1)
+                .createdDate(now())
+                .lastModified(now())
+                .build();
 
         customerMap = new HashMap<>(of(customer1.getId(), customer1, customer2.getId(), customer2));
     }
@@ -51,14 +49,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO addCustomer(CustomerDTO customer) {
-        CustomerDTO savedCustomer =
-                CustomerDTO.builder()
-                        .id(randomUUID())
-                        .createdDate(now())
-                        .lastModified(now())
-                        .name(customer.getName())
-                        .version(customer.getVersion() == 0 ? 1 : customer.getVersion())
-                        .build();
+        CustomerDTO savedCustomer = CustomerDTO.builder()
+                .id(randomUUID())
+                .createdDate(now())
+                .lastModified(now())
+                .name(customer.getName())
+                .version(customer.getVersion() == 0 ? 1 : customer.getVersion())
+                .build();
 
         customerMap.put(savedCustomer.getId(), savedCustomer);
 

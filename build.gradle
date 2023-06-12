@@ -83,6 +83,7 @@ rootProject.afterEvaluate(){
 }
 
 openApi {
+	apiDocsUrl.set("http://localhost:8080/v3/api-docs.yaml")
 	outputDir.set(file("$buildDir/docs"))
 	outputFileName.set("openapi.yaml")
 }
@@ -96,7 +97,7 @@ compileJava {
 spotless {
 	java {
 		removeUnusedImports()
-		googleJavaFormat().aosp()
+		palantirJavaFormat()
 	}
 }
 

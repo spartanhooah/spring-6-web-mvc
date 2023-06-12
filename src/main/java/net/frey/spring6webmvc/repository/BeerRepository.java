@@ -12,6 +12,5 @@ public interface BeerRepository extends JpaRepository<BeerEntity, UUID> {
 
     Page<BeerEntity> findAllByBeerStyle(BeerStyle style, Pageable pageable);
 
-    Page<BeerEntity> findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle(
-            String name, BeerStyle style, Pageable pageable);
+    Page<BeerEntity> findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle(String name, BeerStyle style, Pageable pageable);
 }

@@ -9,33 +9,45 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BeerCsv {
-    @CsvBindByName private int row;
+    @CsvBindByName
+    private int row;
 
     @CsvBindByName(column = "count.x")
     private int count_x;
 
-    @CsvBindByName private String abv;
+    @CsvBindByName
+    private String abv;
 
-    @CsvBindByName private String ibu;
-    @CsvBindByName private int id;
+    @CsvBindByName
+    private String ibu;
 
-    @CsvBindByName private String beer;
+    @CsvBindByName
+    private int id;
 
-    @CsvBindByName private String style;
+    @CsvBindByName
+    private String beer;
+
+    @CsvBindByName
+    private String style;
 
     @CsvBindByName(column = "brewer_id")
     private int breweryId;
 
-    @CsvBindByName private float ounces;
+    @CsvBindByName
+    private float ounces;
 
-    @CsvBindByName private String style2;
+    @CsvBindByName
+    private String style2;
 
     @CsvBindByName(column = "count.y")
     private String count_y;
 
-    @CsvBindByName private String city;
+    @CsvBindByName
+    private String city;
 
-    @CsvBindByName private String state;
+    @CsvBindByName
+    private String state;
 
-    @CsvBindByName private String label;
+    @CsvBindByName
+    private String label;
 }

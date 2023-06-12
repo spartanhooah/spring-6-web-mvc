@@ -15,14 +15,20 @@ public class BeerDTO {
     private UUID id;
     private int version;
 
-    @NotBlank private String beerName;
+    @NotBlank
+    private String beerName;
 
-    @NotNull private BeerStyle beerStyle;
+    @NotNull
+    private BeerStyle beerStyle;
 
-    @NotBlank private String upc;
+    @NotBlank
+    private String upc;
+
     private Integer quantityOnHand;
 
-    @NotNull private BigDecimal price;
+    @NotNull
+    private BigDecimal price;
+
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }
